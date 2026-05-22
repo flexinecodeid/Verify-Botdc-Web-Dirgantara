@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifikasi Keamanan</title>
+    <title>Gerbang Verifikasi Keamanan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,10 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <script>
@@ -23,11 +21,7 @@
                 extend: {
                     fontFamily: { manrope: ['Manrope', 'sans-serif'] },
                     colors: {
-                        gate: {
-                            blue: '#1a73e8', lightBlue: '#f0f6ff',
-                            darkText: '#1f1f1f', grayText: '#5f6368',
-                            border: '#e0e2e6', bgGray: '#f8f9fa'
-                        }
+                        gate: { blue: '#1a73e8', lightBlue: '#f0f6ff', darkText: '#1f1f1f', grayText: '#5f6368', border: '#e0e2e6', bgGray: '#f8f9fa' }
                     }
                 }
             }
@@ -41,14 +35,9 @@
         }
         .grid-overlay {
             background-size: 30px 30px;
-            background-image: linear-gradient(to right, rgba(26, 115, 232, 0.02) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(26, 115, 232, 0.02) 1px, transparent 1px);
+            background-image: linear-gradient(to right, rgba(26, 115, 232, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(26, 115, 232, 0.02) 1px, transparent 1px);
         }
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
     </style>
 </head>
 <body class="min-h-screen text-gate-darkText flex flex-col justify-between items-center px-4 py-8 relative grid-overlay">
@@ -60,14 +49,19 @@
             </div>
             <span class="text-xs font-bold tracking-wider text-gate-grayText uppercase">Sistem Verifikasi</span>
         </div>
-        <div class="px-3.5 py-1.5 bg-white border border-gate-border/60 rounded-full text-[11px] font-semibold text-gate-grayText shadow-sm">
-            Koneksi: <span class="text-emerald-600 font-bold"><i class="fa-solid fa-lock text-[9px] mr-1"></i>Aman</span>
+        <div class="flex items-center gap-2">
+            <button id="btn-sound-toggle" onclick="toggleMute()" class="px-3 py-1.5 bg-white border border-gate-border/60 hover:bg-gate-lightBlue rounded-full text-xs font-semibold text-gate-grayText shadow-sm flex items-center gap-1.5 transition-all duration-200">
+                <i id="sound-icon" class="fa-solid fa-volume-high text-gate-blue"></i>
+                <span id="sound-status">Suara Aktif</span>
+            </button>
+            <div class="px-3.5 py-1.5 bg-white border border-gate-border/60 rounded-full text-[11px] font-semibold text-gate-grayText shadow-sm">
+                Koneksi: <span class="text-emerald-600 font-bold"><i class="fa-solid fa-lock text-[9px] mr-1"></i>Aman</span>
+            </div>
         </div>
     </header>
 
     <main id="main-card" class="w-full max-w-md bg-white/90 backdrop-blur-md border border-gate-border/40 rounded-[28px] shadow-[0_20px_60px_rgba(26,115,232,0.08)] p-6 sm:p-8 my-auto relative z-10 opacity-0 transform translate-y-8">
         
-        <!-- Header Kartu -->
         <div class="text-center mb-6">
             <div id="logo-container" class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-50 to-indigo-50 border border-blue-100 shadow-inner mb-4 relative overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 blur-md"></div>
@@ -75,15 +69,10 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                 </svg>
             </div>
-            <h1 id="title" class="text-xl sm:text-2xl font-extrabold tracking-tight text-gate-darkText mb-2">
-                Otentikasi Pengguna
-            </h1>
-            <p id="subtitle" class="text-gate-grayText text-xs sm:text-sm px-2 leading-relaxed">
-                Bukti keamanan ganda diperlukan. Harap selesaikan tantangan di bawah ini.
-            </p>
+            <h1 id="title" class="text-xl sm:text-2xl font-extrabold tracking-tight text-gate-darkText mb-2">Otentikasi Pengguna</h1>
+            <p id="subtitle" class="text-gate-grayText text-xs sm:text-sm px-2 leading-relaxed">Bukti keamanan ganda diperlukan. Harap selesaikan tantangan di bawah ini.</p>
         </div>
 
-        <!-- Info Akun Pengguna Dinamis -->
         <div id="user-info-box" class="bg-gate-bgGray border border-gate-border/40 rounded-full py-2 px-3 mb-6 flex items-center justify-between max-w-xs mx-auto shadow-sm hidden">
             <div class="flex items-center gap-2.5">
                 <div class="w-7 h-7 rounded-full bg-gate-blue text-white flex items-center justify-center text-xs font-bold shadow-sm">
@@ -97,28 +86,21 @@
             <span class="text-[9px] bg-gate-blue/10 text-gate-blue font-extrabold px-2 py-0.5 rounded-full">Discord</span>
         </div>
 
-        <!-- Area Form Captcha Utama -->
         <div id="captcha-area" class="space-y-5 hidden">
-            
-            <!-- Tahap 1: Visual Captcha -->
             <div class="bg-gate-bgGray border border-gate-border rounded-2xl p-4 relative">
                 <span class="absolute -top-2.5 left-4 bg-gate-bgGray px-2 text-[10px] font-bold text-gate-blue uppercase tracking-wider">Tahap 1: Kode Visual</span>
                 
                 <div class="flex items-center gap-3 mt-2">
-                    <!-- Canvas Captcha -->
                     <div class="flex-1 bg-white border border-gate-border rounded-xl h-14 overflow-hidden relative shadow-inner">
                         <canvas id="captcha-canvas" width="200" height="56" class="w-full h-full cursor-crosshair"></canvas>
                     </div>
-                    
                     <button id="btn-refresh" onclick="generateVisualCaptcha()" class="w-14 h-14 bg-white hover:bg-gate-lightBlue border border-gate-border rounded-xl flex items-center justify-center transition-all duration-200 group" title="Ganti Kode">
                         <i class="fa-solid fa-arrows-rotate text-gate-grayText group-hover:text-gate-blue group-hover:rotate-180 transition-all duration-500"></i>
                     </button>
                 </div>
 
                 <div class="mt-3 relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gate-grayText/60">
-                        <i class="fa-solid fa-keyboard text-xs"></i>
-                    </span>
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gate-grayText/60"><i class="fa-solid fa-keyboard text-xs"></i></span>
                     <input type="text" id="captcha-input" autocomplete="off" placeholder="Salin kode abstrak di atas..." class="w-full bg-white border border-gate-border focus:border-gate-blue focus:ring-2 focus:ring-blue-100 rounded-xl py-2.5 pl-10 pr-4 text-sm text-gate-darkText font-bold placeholder-gate-grayText/40 focus:outline-none transition-all duration-200">
                 </div>
                 <p id="error-message" class="text-red-500 text-[10px] mt-1.5 hidden flex items-center gap-1 pl-1 font-bold">
@@ -126,55 +108,42 @@
                 </p>
             </div>
 
-            <!-- Tahap 2: Cloudflare Turnstile -->
             <div class="bg-gate-bgGray border border-gate-border rounded-2xl p-4 relative flex justify-center">
                 <span class="absolute -top-2.5 left-4 bg-gate-bgGray px-2 text-[10px] font-bold text-gate-blue uppercase tracking-wider">Tahap 2: Pengecekan Lingkungan</span>
-                
                 <div class="mt-2 w-full flex justify-center">
-                    <!-- GANTI DENGAN SITEKEY CLOUDFLARE ASLI MILIKMU DI PRODUCTION -->
                     <div class="cf-turnstile" data-sitekey="0x4AAAAAADUXrPWeXJA-WYil" data-callback="enableSubmitBtn" data-theme="light"></div>
                 </div>
             </div>
 
-            <!-- Tombol Submit -->
             <button id="btn-submit" onclick="validateVerifications()" disabled class="w-full bg-gate-blue hover:bg-blue-700 active:scale-[0.98] text-white text-sm font-bold py-3.5 rounded-xl shadow-md shadow-blue-500/10 transition-all duration-200 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-lock text-xs"></i> Selesaikan Verifikasi
             </button>
 
-            <!-- Status -->
             <div class="flex items-center justify-center text-[11px] text-gate-grayText">
                 <span id="attempts-left" class="font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200/40 shadow-sm">Kesempatan: 3 Kali</span>
             </div>
         </div>
 
-        <!-- Cooldown Area -->
         <div id="cooldown-area" class="hidden py-6 text-center">
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-50 border border-red-100 mb-5 relative">
-                <svg class="absolute inset-0 w-full h-full text-red-200 animate-[spin_10s_linear_infinite]" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="30 10"></circle>
-                </svg>
+                <svg class="absolute inset-0 w-full h-full text-red-200 animate-[spin_10s_linear_infinite]" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="30 10"></circle></svg>
                 <i class="fa-solid fa-ban text-3xl text-red-500"></i>
             </div>
             <h2 class="text-xl font-extrabold text-gate-darkText mb-2">Akses Terkunci</h2>
-            <p class="text-gate-grayText text-xs leading-relaxed mb-6 px-3">
-                Terlalu banyak percobaan yang gagal. Demi keamanan server, sistem telah memblokir akses Anda sementara waktu.
-            </p>
+            <p class="text-gate-grayText text-xs leading-relaxed mb-6 px-3">Terlalu banyak percobaan yang gagal. Demi keamanan server, sistem telah memblokir akses Anda sementara waktu.</p>
             <div class="bg-gate-bgGray border border-gate-border/60 rounded-2xl py-4 px-6 max-w-xs mx-auto mb-2 shadow-inner">
                 <span class="block text-[10px] text-gate-grayText uppercase font-bold tracking-widest mb-1">Terbuka kembali dalam</span>
                 <span id="cooldown-timer" class="text-3xl font-mono font-black text-gate-blue tracking-wider">05:00</span>
             </div>
         </div>
 
-        <!-- Success Area -->
         <div id="success-area" class="hidden py-6 text-center">
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-50 border border-emerald-100 mb-5 relative">
                 <div class="absolute inset-0 bg-emerald-400/20 rounded-full animate-ping"></div>
                 <i class="fa-solid fa-shield-check text-4xl text-emerald-500 relative z-10"></i>
             </div>
-            <h2 class="text-2xl font-extrabold text-gate-darkText mb-2">Akses Diberikan!</h2>
-            <p class="text-gate-grayText text-sm leading-relaxed mb-6">
-                Selamat, sistem memvalidasi bahwa Anda adalah pengguna sah.
-            </p>
+            <h2 class="text-2xl font-extrabold text-gate-darkText mb-2">Selamat!</h2>
+            <p class="text-gate-grayText text-sm leading-relaxed mb-6">sistem memvalidasi bahwa Anda adalah pengguna sah.</p>
             <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 max-w-xs mx-auto text-center shadow-sm">
                 <div class="flex items-center justify-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -183,17 +152,13 @@
             </div>
         </div>
 
-        <!-- Error Area (No User ID) -->
         <div id="error-denied-area" class="hidden py-6 text-center">
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-50 border border-red-100 mb-5">
                 <i class="fa-solid fa-triangle-exclamation text-4xl text-red-500"></i>
             </div>
             <h2 class="text-xl font-extrabold text-red-600 mb-2">Akses Ditolak</h2>
-            <p class="text-gate-grayText text-sm leading-relaxed mb-6 px-2">
-                Parameter pengguna tidak ditemukan. Anda harus mengakses halaman ini melalui tombol verifikasi di server Discord kami.
-            </p>
+            <p class="text-gate-grayText text-sm leading-relaxed mb-6 px-2">Anda harus mengakses halaman ini melalui tombol verifikasi di server Discord kami.</p>
         </div>
-
     </main>
 
     <footer id="footer" class="w-full max-w-lg text-center text-[11px] text-gate-grayText/80 z-10 opacity-0 transform translate-y-4">
@@ -203,16 +168,12 @@
 
     <script>
         // ==========================================
-        //  KONFIGURASI SUPABASE (UBAH SEBELUM DEPLOY)
+        //  SUPABASE (UBAH URL & KEY)
         // ==========================================
         const SUPABASE_URL = 'https://jsgzrprcnxcidjpikpvj.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZ3pycHJjbnhjaWRqcGlrcHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MjgyMjIsImV4cCI6MjA5NDUwNDIyMn0.PeH6aGF2dMyCpjzvnKBm0BqS5qcWRPjsgvFvk30ggac';    
-        
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZ3pycHJjbnhjaWRqcGlrcHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MjgyMjIsImV4cCI6MjA5NDUwNDIyMn0.PeH6aGF2dMyCpjzvnKBm0BqS5qcWRPjsgvFvk30ggac';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ==========================================
-        //  VARIABEL GLOBAL
-        // ==========================================
         let currentCaptchaCode = "";
         let maxAttempts = 3;
         let attemptsLeft = maxAttempts;
@@ -221,19 +182,108 @@
         let dbCooldownTimestamp = null;
         let isTurnstilePassed = false;
         
-        // Murni Mengambil ID dari URL tanpa Fallback Dummy
         const urlParams = new URLSearchParams(window.location.search);
         let discordUserId = urlParams.get('userid');
 
         // ==========================================
-        //  INISIALISASI & KEAMANAN FRONTEND
+        //  SISTEM AUDIO & TTS FIX
+        // ==========================================
+        let audioCtx = null;
+        let isMuted = false;
+        let isAudioUnlocked = false;
+
+        function unlockAudioAPI() {
+            if (isAudioUnlocked) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    gain.gain.value = 0; 
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(0); osc.stop(0.1);
+                }
+                if ('speechSynthesis' in window) {
+                    const silentUtterance = new SpeechSynthesisUtterance('');
+                    silentUtterance.volume = 0;
+                    window.speechSynthesis.speak(silentUtterance);
+                }
+                isAudioUnlocked = true;
+            } catch (e) { console.error(e); }
+        }
+
+        document.body.addEventListener('click', unlockAudioAPI, { once: true });
+        document.body.addEventListener('touchstart', unlockAudioAPI, { once: true });
+
+        function playSynthesizedSound(type) {
+            if (isMuted || !audioCtx) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'success') {
+                    osc.type = 'triangle';
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(0.2, now + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                    osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now + 0.12); 
+                    osc.frequency.setValueAtTime(783.99, now + 0.24); osc.frequency.setValueAtTime(1046.50, now + 0.36); 
+                    osc.start(now); osc.stop(now + 0.8);
+                } else if (type === 'error_buzz') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now);
+                    gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.15, now + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                } else if (type === 'cooldown_alarm') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.linearRampToValueAtTime(880, now + 0.15); osc.frequency.linearRampToValueAtTime(440, now + 0.3);
+                    osc.frequency.linearRampToValueAtTime(880, now + 0.45); osc.frequency.linearRampToValueAtTime(220, now + 0.6);
+                    gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.1, now + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+                    osc.start(now); osc.stop(now + 0.7);
+                }
+            } catch (error) { console.warn(error); }
+        }
+
+        function speakText(text) {
+            if (isMuted || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID';
+                window.speechSynthesis.speak(utterance);
+            } catch (error) { console.error(error); }
+        }
+
+        function toggleMute() {
+            unlockAudioAPI();
+            isMuted = !isMuted;
+            const icon = document.getElementById("sound-icon");
+            const text = document.getElementById("sound-status");
+            if (isMuted) {
+                icon.className = "fa-solid fa-volume-xmark text-red-500";
+                text.innerText = "Suara Mati";
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            } else {
+                icon.className = "fa-solid fa-volume-high text-gate-blue";
+                text.innerText = "Suara Aktif";
+                playSynthesizedSound('success');
+                speakText("Suara telah diaktifkan.");
+            }
+        }
+
+        // ==========================================
+        //  INISIALISASI
         // ==========================================
         document.addEventListener("DOMContentLoaded", () => {
             gsap.to("#header-nav", { opacity: 1, y: 0, duration: 0.8, delay: 0.1, ease: "power3.out" });
             gsap.to("#main-card", { opacity: 1, y: 0, duration: 1, delay: 0.2, ease: "power4.out" });
             gsap.to("#footer", { opacity: 1, y: 0, duration: 0.8, delay: 0.4, ease: "power3.out" });
 
-            // LOGIKA PENGAMANAN: Blokir akses jika tidak ada ID Discord
             if (!discordUserId || discordUserId.trim() === "") {
                 document.getElementById("title").classList.add("hidden");
                 document.getElementById("subtitle").classList.add("hidden");
@@ -241,50 +291,31 @@
                 return;
             }
 
-            // Tampilkan UI Normal & Tulis ID Discord
             document.getElementById("display-userid").innerText = discordUserId;
             document.getElementById("user-info-box").classList.remove("hidden");
             document.getElementById("captcha-area").classList.remove("hidden");
 
-            // Mulai Komunikasi ke Database
             syncDatabaseStatus();
         });
 
-        // ==========================================
-        //  DATABASE & TIMER LOGIC 
-        // ==========================================
         async function syncDatabaseStatus() {
             try {
                 const { data, error } = await supabaseClient.from('verifications').select('*').eq('discord_id', discordUserId).single();
 
                 if (data) {
-                    if (data.status === 'success') {
-                        forceShowSuccess();
-                        return;
-                    }
-
+                    if (data.status === 'success') { forceShowSuccess(); return; }
                     if (data.cooldown_until) {
                         dbCooldownTimestamp = new Date(data.cooldown_until).getTime();
-                        const now = new Date().getTime();
-                        
-                        if (now < dbCooldownTimestamp) {
-                            forceShowCooldown();
-                            return;
-                        } else {
-                            await supabaseClient.from('verifications').update({ attempts: 0, cooldown_until: null, status: 'pending' }).eq('discord_id', discordUserId);
-                        }
+                        if (new Date().getTime() < dbCooldownTimestamp) { forceShowCooldown(); return; } 
+                        else { await supabaseClient.from('verifications').update({ attempts: 0, cooldown_until: null, status: 'pending' }).eq('discord_id', discordUserId); }
                     } else if (data.attempts > 0) {
                         attemptsLeft = maxAttempts - data.attempts;
                         updateAttemptsUI();
                     }
                 } else {
-                    // Masukkan data baru jika user belum ada
                     await supabaseClient.from('verifications').insert([{ discord_id: discordUserId, status: 'pending', attempts: 0 }]);
                 }
-            } catch (err) {
-                console.error("Kesalahan Database:", err);
-            }
-            
+            } catch (err) { console.error(err); }
             generateVisualCaptcha(); 
         }
 
@@ -297,45 +328,31 @@
             const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#f8f9fa';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#f8f9fa'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             currentCaptchaCode = "";
-            for(let i = 0; i < 6; i++) {
-                currentCaptchaCode += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
+            for(let i=0; i<6; i++) currentCaptchaCode += chars.charAt(Math.floor(Math.random() * chars.length));
 
-            for (let i = 0; i < 100; i++) {
+            for (let i=0; i<100; i++) {
                 ctx.fillStyle = `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.5)`;
-                ctx.beginPath();
-                ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI * 2); ctx.fill();
             }
 
-            for (let i = 0; i < 5; i++) {
+            for (let i=0; i<5; i++) {
                 ctx.strokeStyle = `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.8)`;
                 ctx.lineWidth = Math.random() * 2 + 1;
-                ctx.beginPath();
-                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height); ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height); ctx.stroke();
             }
 
-            ctx.font = 'bold 32px Manrope';
-            ctx.textBaseline = 'middle';
-            
+            ctx.font = 'bold 32px Manrope'; ctx.textBaseline = 'middle';
             let xOffset = 20;
-            for (let i = 0; i < currentCaptchaCode.length; i++) {
-                const char = currentCaptchaCode[i];
-                const angle = (Math.random() - 0.5) * 0.8; 
-                const scaleY = 0.8 + Math.random() * 0.4; 
-                
+            for (let i=0; i<currentCaptchaCode.length; i++) {
                 ctx.save();
                 ctx.translate(xOffset, canvas.height / 2 + (Math.random() * 10 - 5));
-                ctx.rotate(angle);
-                ctx.scale(1, scaleY);
+                ctx.rotate((Math.random() - 0.5) * 0.8);
+                ctx.scale(1, 0.8 + Math.random() * 0.4);
                 ctx.fillStyle = `rgb(${Math.random()*100}, ${Math.random()*100}, ${Math.random()*100})`;
-                ctx.fillText(char, 0, 0);
+                ctx.fillText(currentCaptchaCode[i], 0, 0);
                 ctx.restore();
                 xOffset += 26; 
             }
@@ -345,9 +362,6 @@
             gsap.from(canvas, { opacity: 0.3, scale: 0.95, duration: 0.3 });
         }
 
-        // ==========================================
-        //  CLOUDFLARE TURNSTILE CALLBACK
-        // ==========================================
         function enableSubmitBtn(token) {
             isTurnstilePassed = true;
             const btn = document.getElementById("btn-submit");
@@ -356,9 +370,10 @@
         }
 
         // ==========================================
-        //  VALIDASI UTAMA
+        //  VALIDASI UTAMA (DENGAN AUDIO)
         // ==========================================
         async function validateVerifications() {
+            unlockAudioAPI();
             if (!isTurnstilePassed || !discordUserId) return; 
 
             const userInput = document.getElementById("captcha-input").value.trim();
@@ -367,6 +382,8 @@
             if (userInput === "") {
                 showError("Kode visual belum diisi.");
                 shakeElement("#captcha-input");
+                playSynthesizedSound('error_buzz');
+                speakText("Kolom input tidak boleh kosong.");
                 return;
             }
 
@@ -374,7 +391,6 @@
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Memvalidasi...`;
 
             if (userInput === currentCaptchaCode) {
-                // UPDATE DB
                 await supabaseClient.from('verifications').update({ status: 'success' }).eq('discord_id', discordUserId);
                 showSuccessState();
             } else {
@@ -386,25 +402,17 @@
                     const dbTime = new Date(Date.now() + (cooldownTime * 1000));
                     dbCooldownTimestamp = dbTime.getTime();
                     
-                    await supabaseClient.from('verifications').update({ 
-                        status: 'failed', 
-                        attempts: 3, 
-                        cooldown_until: dbTime.toISOString() 
-                    }).eq('discord_id', discordUserId);
-                    
+                    await supabaseClient.from('verifications').update({ status: 'failed', attempts: 3, cooldown_until: dbTime.toISOString() }).eq('discord_id', discordUserId);
                     forceShowCooldown();
                 } else {
                     await supabaseClient.from('verifications').update({ attempts: currentAttempt }).eq('discord_id', discordUserId);
-                    
                     showError("Kode visual salah. Perhatikan baik-baik hurufnya.");
                     updateAttemptsUI();
                     generateVisualCaptcha();
+                    if(typeof turnstile !== 'undefined') { turnstile.reset(); isTurnstilePassed = false; }
                     
-                    // Reset Cloudflare Box
-                    if(typeof turnstile !== 'undefined') {
-                        turnstile.reset(); 
-                        isTurnstilePassed = false;
-                    }
+                    playSynthesizedSound('error_buzz');
+                    speakText("Gagal. Kode captcha salah. Silakan coba lagi.");
                 }
                 
                 btn.disabled = false;
@@ -418,27 +426,22 @@
         }
 
         function showError(msg) {
-            const errorElement = document.getElementById("error-message");
             document.getElementById("error-text").innerText = msg;
-            errorElement.classList.remove("hidden");
-            gsap.fromTo(errorElement, { y: -5, opacity: 0 }, { y: 0, opacity: 1, duration: 0.2 });
+            document.getElementById("error-message").classList.remove("hidden");
+            gsap.fromTo("#error-message", { y: -5, opacity: 0 }, { y: 0, opacity: 1, duration: 0.2 });
         }
 
         function shakeElement(selector) {
             gsap.fromTo(selector, { x: -5 }, { x: 5, duration: 0.05, repeat: 5, yoyo: true, onComplete: () => gsap.set(selector, { x: 0 }) });
         }
 
-        // ==========================================
-        //  PENGENDALI UI
-        // ==========================================
         function showSuccessState() {
+            playSynthesizedSound('success');
+            speakText("Verifikasi berhasil! Selamat bergabung.");
             gsap.to(["#captcha-area", "#subtitle", "#user-info-box", "#title"], {
                 opacity: 0, y: -10, duration: 0.3, onComplete: () => {
-                    document.getElementById("captcha-area").classList.add("hidden");
-                    document.getElementById("subtitle").classList.add("hidden");
-                    document.getElementById("user-info-box").classList.add("hidden");
-                    document.getElementById("title").classList.add("hidden");
-                    
+                    document.getElementById("captcha-area").classList.add("hidden"); document.getElementById("subtitle").classList.add("hidden");
+                    document.getElementById("user-info-box").classList.add("hidden"); document.getElementById("title").classList.add("hidden");
                     const successArea = document.getElementById("success-area");
                     successArea.classList.remove("hidden");
                     gsap.fromTo(successArea, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.2)" });
@@ -447,45 +450,33 @@
         }
 
         function forceShowSuccess() {
-            document.getElementById("captcha-area").classList.add("hidden");
-            document.getElementById("subtitle").classList.add("hidden");
-            document.getElementById("user-info-box").classList.add("hidden");
-            document.getElementById("title").classList.add("hidden");
-            
-            document.getElementById("success-area").classList.remove("hidden");
-            gsap.set("#success-area", { opacity: 1 });
+            document.getElementById("captcha-area").classList.add("hidden"); document.getElementById("subtitle").classList.add("hidden");
+            document.getElementById("user-info-box").classList.add("hidden"); document.getElementById("title").classList.add("hidden");
+            document.getElementById("success-area").classList.remove("hidden"); gsap.set("#success-area", { opacity: 1 });
         }
 
         function forceShowCooldown() {
-            document.getElementById("captcha-area").classList.add("hidden");
-            document.getElementById("subtitle").classList.add("hidden");
-            document.getElementById("user-info-box").classList.add("hidden");
-            document.getElementById("title").classList.add("hidden");
-            
+            playSynthesizedSound('cooldown_alarm');
+            speakText("Akses Anda dikunci selama lima menit.");
+            document.getElementById("captcha-area").classList.add("hidden"); document.getElementById("subtitle").classList.add("hidden");
+            document.getElementById("user-info-box").classList.add("hidden"); document.getElementById("title").classList.add("hidden");
             document.getElementById("cooldown-area").classList.remove("hidden");
             gsap.fromTo("#cooldown-area", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 });
-            
             runDatabaseTimer();
         }
 
         function runDatabaseTimer() {
             const timerElement = document.getElementById("cooldown-timer");
             clearInterval(cooldownInterval);
-
             cooldownInterval = setInterval(async () => {
-                const now = new Date().getTime();
-                const timeLeftSec = Math.floor((dbCooldownTimestamp - now) / 1000);
-
+                const timeLeftSec = Math.floor((dbCooldownTimestamp - new Date().getTime()) / 1000);
                 if (timeLeftSec <= 0) {
                     clearInterval(cooldownInterval);
-                    if (discordUserId) {
-                        await supabaseClient.from('verifications').update({ attempts: 0, cooldown_until: null, status: 'pending' }).eq('discord_id', discordUserId);
-                    }
+                    if (discordUserId) await supabaseClient.from('verifications').update({ attempts: 0, cooldown_until: null, status: 'pending' }).eq('discord_id', discordUserId);
                     window.location.reload(); 
                 } else {
-                    const minutes = Math.floor(timeLeftSec / 60);
-                    const seconds = timeLeftSec % 60;
-                    timerElement.innerText = `${minutes < 10 ? '0'+minutes : minutes}:${seconds < 10 ? '0'+seconds : seconds}`;
+                    const min = Math.floor(timeLeftSec / 60); const sec = timeLeftSec % 60;
+                    timerElement.innerText = `${min < 10 ? '0'+min : min}:${sec < 10 ? '0'+sec : sec}`;
                 }
             }, 1000);
         }
